@@ -105,20 +105,34 @@ def load_county_outline(selected_county):
 
 # county select helper text
 st.sidebar.markdown(
-    "<p style='text-align:center;color:#000000;'>Map layer (by Census tract):</p>", unsafe_allow_html=True)
+    "<p style='text-align:center;color:#000000;'>Map layer <br> (by Census tract):</p>", unsafe_allow_html=True)
 
 # choropleth map variable select
 attribute = st.sidebar.selectbox(
     label='label',
     label_visibility='collapsed',
     options=[
-        f'{current_year} Total Population',
-        f'{current_year} Senior Population (65+)', 
-        f'{current_year} Population Density',
-        f'{current_year}-{projected_year} Population Growth Rate',
-        f'{current_year} Median Household Income',
-        f'{current_year}-{projected_year} Homeownership Growth Rate'
+        'Total Population',
+        'Senior Population', 
+        'Population Density',
+        'Population Growth Rate',
+        'Median Household Income',
+        'Homeownership Growth Rate'
     ]
+)
+
+# explanatory text dictionary
+mappingVar_explanation = {
+    'Total Population': '2024 estimate',
+    'Senior Population': '2024 population estimate age 65 and over', 
+    'Population Density': '2024 population per square mile',
+    'Population Growth Rate': f'compound annual growth rate measuring the direction (either positive or negative) and magnitude of change in total population between the years {current_year} and {projected_year}',
+    'Median Household Income': '2024 estimate',
+    'Homeownership Growth Rate': f'compound annual growth rate measuring the direction (either positive or negative) and magnitude of change in total owner-occupied housing units between the years {current_year} and {projected_year}'
+}
+
+st.sidebar.markdown(
+    f"<p style='text-align:center;color:#000000;font-size: 13px;'>*{mappingVar_explanation[attribute]}</p>", unsafe_allow_html=True
 )
 
 # sidebar separator
@@ -164,62 +178,62 @@ geometry_gdf = load_geometry()
 
 # Map dropdown to file paths
 attribute_files = {
-    f'{current_year} Total Population': f'Data/CSV/Color-coded maps - {current_year} Total Population.csv',
-    f'{current_year} Senior Population (65+)': f'Data/CSV/Color-coded maps - {current_year} Senior Population.csv',
-    f'{current_year} Population Density': f'Data/CSV/Color-coded maps - {current_year} Population Density.csv',
-    f'{current_year}-{projected_year} Population Growth Rate': f'Data/CSV/Color-coded maps - {current_year}-{projected_year} Growth Rate Population.csv',
-    f'{current_year} Median Household Income': f'Data/CSV/Color-coded maps - {current_year} Median Household Income.csv',
-    f'{current_year}-{projected_year} Homeownership Growth Rate': f'Data/CSV/Color-coded maps - {current_year}-{projected_year} Growth Rate Owner Occ HUs.csv'
+    'Total Population': f'Data/CSV/Color-coded maps - {current_year} Total Population.csv',
+    'Senior Population': f'Data/CSV/Color-coded maps - {current_year} Senior Population.csv',
+    'Population Density': f'Data/CSV/Color-coded maps - {current_year} Population Density.csv',
+    'Population Growth Rate': f'Data/CSV/Color-coded maps - {current_year}-{projected_year} Growth Rate Population.csv',
+    'Median Household Income': f'Data/CSV/Color-coded maps - {current_year} Median Household Income.csv',
+    'Homeownership Growth Rate': f'Data/CSV/Color-coded maps - {current_year}-{projected_year} Growth Rate Owner Occ HUs.csv'
 }
 
 # Map dropdown to column names
 attribute_columnNames = {
-    f'{current_year} Total Population': f'{current_year} Total Population',
-    f'{current_year} Senior Population (65+)': f'{current_year} Senior Population',
-    f'{current_year} Population Density': f'{current_year} Population Density',
-    f'{current_year}-{projected_year} Population Growth Rate': f'{current_year}-{projected_year} Growth Rate: Population',
-    f'{current_year} Median Household Income': f'{current_year} Median Household Income',
-    f'{current_year}-{projected_year} Homeownership Growth Rate': f'{current_year}-{projected_year} Growth Rate: Owner Occ HUs'
+    'Total Population': f'{current_year} Total Population',
+    'Senior Population': f'{current_year} Senior Population',
+    'Population Density': f'{current_year} Population Density',
+    'Population Growth Rate': f'{current_year}-{projected_year} Growth Rate: Population',
+    'Median Household Income': f'{current_year} Median Household Income',
+    'Homeownership Growth Rate': f'{current_year}-{projected_year} Growth Rate: Owner Occ HUs'
 }
 
 # Map dropdown to tooltip number formats
 attribute_numberFormats = {
-    f'{current_year} Total Population': lambda x: f"{x:,}",
-    f'{current_year} Senior Population (65+)': lambda x: f"{x:,}",
-    f'{current_year} Population Density': lambda x: f"{x:,.0f}",
-    f'{current_year}-{projected_year} Population Growth Rate': lambda x: f"{x * 100:.2f}%",
-    f'{current_year} Median Household Income': lambda x: f"${x:,.0f}",
-    f'{current_year}-{projected_year} Homeownership Growth Rate': lambda x: f"{x * 100:.2f}%"  
+    'Total Population': lambda x: f"{x:,}",
+    'Senior Population': lambda x: f"{x:,}",
+    'Population Density': lambda x: f"{x:,.0f}",
+    'Population Growth Rate': lambda x: f"{x * 100:.2f}%",
+    'Median Household Income': lambda x: f"${x:,.0f}",
+    'Homeownership Growth Rate': lambda x: f"{x * 100:.2f}%"  
 }
 
 # Map dropdown to colorbar number formats
 attribute_colorbarFormats = {
-    f'{current_year} Total Population': ',',
-    f'{current_year} Senior Population (65+)': ',',
-    f'{current_year} Population Density': ',',
-    f'{current_year}-{projected_year} Population Growth Rate': '.2%',
-    f'{current_year} Median Household Income': '$,',
-    f'{current_year}-{projected_year} Homeownership Growth Rate': '.1%'  
+    'Total Population': ',',
+    'Senior Population': ',',
+    'Population Density': ',',
+    'Population Growth Rate': '.2%',
+    'Median Household Income': '$,',
+    'Homeownership Growth Rate': '.1%'  
 }
 
 # Map dropdown to choropleth colors
 attribute_choroColor = {
-    f'{current_year} Total Population': 'Blues',
-    f'{current_year} Senior Population (65+)': 'Oranges',
-    f'{current_year} Population Density': 'BuPu',
-    f'{current_year}-{projected_year} Population Growth Rate': 'Reds',
-    f'{current_year} Median Household Income': 'Greens',
-    f'{current_year}-{projected_year} Homeownership Growth Rate': 'Purples'
+    'Total Population': 'Blues',
+    'Senior Population': 'Oranges',
+    'Population Density': 'BuPu',
+    'Population Growth Rate': 'Reds',
+    'Median Household Income': 'Greens',
+    'Homeownership Growth Rate': 'Purples'
 }
 
 # Map dropdown to choropleth legend title
 attribute_choroLegend = {
-    f'{current_year} Total Population': 'Population',
-    f'{current_year} Senior Population (65+)': 'Senior Population',
-    f'{current_year} Population Density': 'Population Density',
-    f'{current_year}-{projected_year} Population Growth Rate': 'Population Growth Rate',
-    f'{current_year} Median Household Income': 'Median Income',
-    f'{current_year}-{projected_year} Homeownership Growth Rate': 'Homeownership Growth Rate'
+    'Total Population': 'Population',
+    'Senior Population': 'Senior Population',
+    'Population Density': 'Population Density',
+    'Population Growth Rate': 'Population Growth Rate',
+    'Median Household Income': 'Median Income',
+    'Homeownership Growth Rate': 'Homeownership Growth Rate'
 }
 
 # Load the selected attribute data
@@ -624,6 +638,7 @@ metro_clarification = {
     'Monmouth County, NJ': 'Monmouth County, NJ (NYC metro)',
     'Westchester County, NY': 'Westchester County, NY (NYC metro)',
     'Hudson County, NJ': 'Hudson County, NJ (NYC metro)',
+    'Fairfield County, CT': 'Fairfield County, CT (NYC metro)',
     'San Mateo County, CA': 'San Mateo County, CA (Bay Area)',
     'Santa Clara County, CA': 'Santa Clara County, CA (Bay Area)',
     'Collier County, FL': 'Collier County, FL (Naples)',
@@ -657,6 +672,20 @@ metro_clarification = {
     'Franklin County, OH': 'Franklin County, OH (Columbus metro)',
     'Clark County, NV': 'Clark County, NV (Las Vegas metro)',
     'Marion County, IN': 'Marion County, IN (Indianapolis metro)',
+    'Cannon County, TN': 'Cannon County, TN (Nashville metro)',
+    'Cheatham County, TN': 'Cheatham County, TN (Nashville metro)',
+    'Davidson County, TN': 'Davidson County, TN (Nashville metro)',
+    'Dickson County, TN': 'Dickson County, TN (Nashville metro)',
+    'Hickman County, TN': 'Hickman County, TN (Nashville metro)',
+    'Macon County, TN': 'Macon County, TN (Nashville metro)',
+    'Maury County, TN': 'Maury County, TN (Nashville metro)',
+    'Robertson County, TN': 'Robertson County, TN (Nashville metro)',
+    'Rutherford County, TN': 'Rutherford County, TN (Nashville metro)',
+    'Smith County, TN': 'Smith County, TN (Nashville metro)',
+    'Sumner County, TN': 'Sumner County, TN (Nashville metro)',
+    'Trousdale County, TN': 'Trousdale County, TN (Nashville metro)',
+    'Williamson County, TN': 'Williamson County, TN (Nashville metro)',
+    'Wilson County, TN': 'Wilson County, TN (Nashville metro)',
 }
 
 # inflow table xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -781,7 +810,6 @@ hide_default_format = """
                 padding-top: 23px;
                 padding-left: 23px;
                 }
-
             [class="stDeployButton"] {
                 display: none;
             } 
