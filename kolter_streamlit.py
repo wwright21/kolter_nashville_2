@@ -121,18 +121,66 @@ attribute = st.sidebar.selectbox(
     ]
 )
 
-# explanatory text dictionary
-mappingVar_explanation = {
-    'Total Population': '2024 estimate',
-    'Senior Population': '2024 population estimate age 65 and over', 
-    'Population Density': '2024 population per square mile',
-    'Population Growth Rate': f'compound annual growth rate measuring the direction (either positive or negative) and magnitude of change in total population between the years {current_year} and {projected_year}',
-    'Median Household Income': '2024 estimate',
-    'Homeownership Growth Rate': f'compound annual growth rate measuring the direction (either positive or negative) and magnitude of change in total owner-occupied housing units between the years {current_year} and {projected_year}'
+# Define a dictionary to hold all relevant information for each attribute
+attribute_info = {
+    'Total Population': {
+        'explanation': '2024 estimate',
+        'file': f'Data/CSV/Color-coded maps - {current_year} Total Population.csv',
+        'column_name': f'{current_year} Total Population',
+        'number_format': lambda x: f"{x:,}",
+        'colorbar_format': ',',
+        'choro_color': 'Blues',
+        'choro_legend': 'Population'
+    },
+    'Senior Population': {
+        'explanation': '2024 population estimate age 65 and over',
+        'file': f'Data/CSV/Color-coded maps - {current_year} Senior Population.csv',
+        'column_name': f'{current_year} Senior Population',
+        'number_format': lambda x: f"{x:,}",
+        'colorbar_format': ',',
+        'choro_color': 'Oranges',
+        'choro_legend': 'Senior Population'
+    },
+    'Population Density': {
+        'explanation': '2024 population per square mile',
+        'file': f'Data/CSV/Color-coded maps - {current_year} Population Density.csv',
+        'column_name': f'{current_year} Population Density',
+        'number_format': lambda x: f"{x:,.0f}",
+        'colorbar_format': ',',
+        'choro_color': 'BuPu',
+        'choro_legend': 'Population Density'
+    },
+    'Population Growth Rate': {
+        'explanation': f'compound annual growth rate measuring the direction (either positive or negative) and magnitude of change in total population between the years {current_year} and {projected_year}',
+        'file': f'Data/CSV/Color-coded maps - {current_year}-{projected_year} Growth Rate Population.csv',
+        'column_name': f'{current_year}-{projected_year} Growth Rate: Population',
+        'number_format': lambda x: f"{x * 100:.2f}%",
+        'colorbar_format': '.2%',
+        'choro_color': 'Reds',
+        'choro_legend': 'Population Growth Rate'
+    },
+    'Median Household Income': {
+        'explanation': '2024 estimate',
+        'file': f'Data/CSV/Color-coded maps - {current_year} Median Household Income.csv',
+        'column_name': f'{current_year} Median Household Income',
+        'number_format': lambda x: f"${x:,.0f}",
+        'colorbar_format': '$,',
+        'choro_color': 'Greens',
+        'choro_legend': 'Median Income'
+    },
+    'Homeownership Growth Rate': {
+        'explanation': f'compound annual growth rate measuring the direction (either positive or negative) and magnitude of change in total owner-occupied housing units between the years {current_year} and {projected_year}',
+        'file': f'Data/CSV/Color-coded maps - {current_year}-{projected_year} Growth Rate Owner Occ HUs.csv',
+        'column_name': f'{current_year}-{projected_year} Growth Rate: Owner Occ HUs',
+        'number_format': lambda x: f"{x * 100:.2f}%",
+        'colorbar_format': '.1%',
+        'choro_color': 'Purples',
+        'choro_legend': 'Homeownership Growth Rate'
+    }
 }
 
 st.sidebar.markdown(
-    f"<p style='text-align:center;color:#000000;font-size: 13px;'>*{mappingVar_explanation[attribute]}</p>", unsafe_allow_html=True
+    f"<p style='text-align:center;color:#000000;font-size: 13px;'>*{attribute_info[attribute]['explanation']}</p>", unsafe_allow_html=True
 )
 
 # sidebar separator
@@ -176,56 +224,6 @@ def load_attribute(attribute_file):
 # Load the geometry data once
 geometry_gdf = load_geometry()
 
-# Map dropdown to file paths
-attribute_files = {
-    'Total Population': f'Data/CSV/Color-coded maps - {current_year} Total Population.csv',
-    'Senior Population': f'Data/CSV/Color-coded maps - {current_year} Senior Population.csv',
-    'Population Density': f'Data/CSV/Color-coded maps - {current_year} Population Density.csv',
-    'Population Growth Rate': f'Data/CSV/Color-coded maps - {current_year}-{projected_year} Growth Rate Population.csv',
-    'Median Household Income': f'Data/CSV/Color-coded maps - {current_year} Median Household Income.csv',
-    'Homeownership Growth Rate': f'Data/CSV/Color-coded maps - {current_year}-{projected_year} Growth Rate Owner Occ HUs.csv'
-}
-
-# Map dropdown to column names
-attribute_columnNames = {
-    'Total Population': f'{current_year} Total Population',
-    'Senior Population': f'{current_year} Senior Population',
-    'Population Density': f'{current_year} Population Density',
-    'Population Growth Rate': f'{current_year}-{projected_year} Growth Rate: Population',
-    'Median Household Income': f'{current_year} Median Household Income',
-    'Homeownership Growth Rate': f'{current_year}-{projected_year} Growth Rate: Owner Occ HUs'
-}
-
-# Map dropdown to tooltip number formats
-attribute_numberFormats = {
-    'Total Population': lambda x: f"{x:,}",
-    'Senior Population': lambda x: f"{x:,}",
-    'Population Density': lambda x: f"{x:,.0f}",
-    'Population Growth Rate': lambda x: f"{x * 100:.2f}%",
-    'Median Household Income': lambda x: f"${x:,.0f}",
-    'Homeownership Growth Rate': lambda x: f"{x * 100:.2f}%"  
-}
-
-# Map dropdown to colorbar number formats
-attribute_colorbarFormats = {
-    'Total Population': ',',
-    'Senior Population': ',',
-    'Population Density': ',',
-    'Population Growth Rate': '.2%',
-    'Median Household Income': '$,',
-    'Homeownership Growth Rate': '.1%'  
-}
-
-# Map dropdown to choropleth colors
-attribute_choroColor = {
-    'Total Population': 'Blues',
-    'Senior Population': 'Oranges',
-    'Population Density': 'BuPu',
-    'Population Growth Rate': 'Reds',
-    'Median Household Income': 'Greens',
-    'Homeownership Growth Rate': 'Purples'
-}
-
 # Map dropdown to choropleth legend title
 attribute_choroLegend = {
     'Total Population': 'Population',
@@ -237,8 +235,8 @@ attribute_choroLegend = {
 }
 
 # Load the selected attribute data
-attribute_df = load_attribute(attribute_files[attribute])
-attribute_df['tooltip'] = attribute_df[attribute_columnNames[attribute]].apply(attribute_numberFormats[attribute])
+attribute_df = load_attribute(attribute_info[attribute]['file'])
+attribute_df['tooltip'] = attribute_df[attribute_info[attribute]['column_name']].apply(attribute_info[attribute]['number_format'])
 
 # Before merging, have to format the GEOID column
 def split_and_format(value):
@@ -276,11 +274,11 @@ fig = px.choropleth_mapbox(
     merged_gdf,
     geojson=merged_gdf.geometry,
     locations=merged_gdf.index,
-    color=attribute_columnNames[attribute],
-    color_continuous_scale=attribute_choroColor[attribute],
+    color=attribute_info[attribute]['column_name'],
+    color_continuous_scale=attribute_info[attribute]['choro_color'],
     custom_data=['tooltip', 'county_name'],
     labels={
-        'tooltip': attribute_columnNames[attribute]
+        'tooltip': attribute_info[attribute]['column_name']
         },
     center={"lat": 36.00734326974716, "lon": -86.75460358901837},
     zoom=7.5,
@@ -303,15 +301,16 @@ fig.update_layout(
 
 # style and customize the map
 fig.update_coloraxes(
-
     colorbar_x=0.5,
     colorbar_y=0,
     colorbar_thickness=20,
-    colorbar_tickformat = attribute_colorbarFormats[attribute],
+    colorbar_tickformat = attribute_info[attribute]['colorbar_format'],
     colorbar_tickfont_size=12,
+    colorbar_tickfont_color="rgba(0,0,0,1)",
     colorbar_title_font_size=13,
+    colorbar_title_font_color="rgba(0,0,0,1)",
     colorbar_orientation='h',
-    colorbar_title_text=attribute_choroLegend[attribute],
+    colorbar_title_text=attribute_info[attribute]['choro_legend'],
     colorbar_tickangle=60
     )
 
