@@ -432,6 +432,7 @@ fig_permits.update_yaxes(title=None)
 fig_permits.update_layout(
     margin=dict(l=10, r=10, t=50, b=1),
     title=dict(font=dict(size=18)),
+    legend_title_text=''
 )
 
 # Loop through each trace and set hoverlabel colors
