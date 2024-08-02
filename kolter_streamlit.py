@@ -1237,7 +1237,7 @@ else:
         f"""
             <div style='margin-top: {margin_top}px; margin-bottom: {margin_bottom}px; text-align: center;'>
                 <span style='font-size: 16px; font-weight: 200;'>
-                    No outside in-migration to {county} County. Only in-migration within the {base_metro} metro area.
+                    No counted migration into {county} County from outside the {base_metro} metro area (or rural areas).
                 </span>
             </div>
         """,
@@ -1350,7 +1350,7 @@ else:
         f"""
             <div style='margin-top: {margin_top}px; margin-bottom: {margin_bottom}px; text-align: center;'>
                 <span style='font-size: 16px; font-weight: 200;'>
-                    No out-migration from outside {county} County. Only out-migration within the {base_metro} metro area.
+                    No counted migration from {county} County to outside the {base_metro} metro area (or rural areas).
                 </span>
             </div>
         """,
