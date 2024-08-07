@@ -225,15 +225,18 @@ migration_switch = {
         ]
 }
 
-# @st.cache_data
+@st.cache_data
 def load_geometry():
     # Load the geometry data
     return gpd.read_file('Data/tracts_simp.gpkg')
 
-# @st.cache_data
+@st.cache_data
 def load_attribute(attribute_file):
     # Load an attribute data
-    return pd.read_csv(attribute_file, dtype={'GEOID': 'str'})
+    df = pd.read_csv(attribute_file, dtype={'GEOID': 'str'})
+    df['GEOID'] = df['GEOID'].astype(float).map(lambda x: f"{x:.2f}")
+
+    return df
 
 # CHOROPLETH MAP ---------------------------------------------------------------------
 # Load the geometry data once
@@ -252,6 +255,7 @@ attribute_choroLegend = {
 # Load the selected attribute data
 attribute_df = load_attribute(attribute_info[attribute]['file'])
 attribute_df['tooltip'] = attribute_df[attribute_info[attribute]['column_name']].apply(attribute_info[attribute]['number_format'])
+
 
 # Before merging, have to format the GEOID column
 def split_and_format(value):
@@ -364,13 +368,22 @@ col1, col2 = st.columns([0.8,1])
 
 # draw map
 col1.write(" ")
-col1.write(" ")
 col1.plotly_chart(
     fig, 
     config=config,
     theme='streamlit',
     use_container_width=True
     )
+
+# source text
+col1.markdown(
+    """
+    <p style='text-align:left;color:#000000;font-size: 12px; margin-top: -8px;'>
+        <b>Source:</b> ArcGIS Business Analyst
+    </p>
+    """, 
+    unsafe_allow_html=True
+)
 
 # BUILDING PERMITS SECTION ---------------------------------------------------------
 building_permits = pd.read_csv(
@@ -383,8 +396,7 @@ building_permits = pd.read_csv(
 county_fips = str(county_outline.index[0])
 building_permits = building_permits[(building_permits['FIPS'] == county_fips) | (building_permits['county_name']=='Metro')]
 
-# vertical spacer - bumps the chart down justa hair
-col2.write(" ")
+
 
 # set building permit line chart colors
 county_lineColor = '#000000'
@@ -453,6 +465,16 @@ col2.plotly_chart(
     theme='streamlit',
     use_container_width=True
     )
+
+# source text
+col2.markdown(
+    """
+    <p style='text-align:left;color:#000000;font-size: 12px; margin-top: -8px;'>
+        <b>Source:</b> HUD SOCDS Permits Database
+    </p>
+    """, 
+    unsafe_allow_html=True
+)
 
 # create KPI variables
 kpi_df = pd.read_csv('Data/building_permits_KPI.csv')
@@ -524,10 +546,6 @@ fig_migration = px.line(
        }
     )
 
-# hovertemplate_persons =  "<b>%{customdata[0]} - %{customdata[1]} County</b><br>"+"Net migration: %{customdata[2]:,}"+"<extra></extra>"
-
-# hovertemplate_AGI =  "<b>%{customdata[0]} - %{customdata[1]} County</b><br>"+"Net migration: $%{customdata[2]:,}"+"<extra></extra>"
-
 
 # configure the tooltip
 if migration_variable == 'Flow of persons':
@@ -577,6 +595,16 @@ col2.plotly_chart(
     theme='streamlit',
     use_container_width=True
     )
+
+# source text
+col2.markdown(
+    """
+    <p style='text-align:left;color:#000000;font-size: 12px; margin-top: -8px;'>
+        <b>Source:</b> IRS Statistics of Income
+    </p>
+    """, 
+    unsafe_allow_html=True
+)
 
 # Migration KPIs
 with col2:
