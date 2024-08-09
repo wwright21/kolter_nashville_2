@@ -1195,7 +1195,7 @@ inflow_summary['Origin County'] = inflow_summary['Origin County'].map(metro_clar
 inflow_summary_formatted = inflow_summary.style.format(
     {
         "Inflow - AGI": lambda x: '${:,.0f}'.format(x),
-        "Average AGI / Capita": lambda x: '${:,.2f}'.format(x)
+        "AGI / Capita": lambda x: '${:,.2f}'.format(x)
     },
     thousands=','
 )
@@ -1313,7 +1313,7 @@ outflow_summary['Destination County'] = outflow_summary['Destination County'].ma
 outflow_summary_formatted = outflow_summary.style.format(
     {
         "Outflow - AGI": lambda x: '${:,.0f}'.format(x),
-        "Average AGI / Capita": lambda x: '${:,.2f}'.format(x)
+        "AGI / Capita": lambda x: '${:,.2f}'.format(x)
     },
     thousands=','
 )
